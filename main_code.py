@@ -2,6 +2,7 @@
 import numpy as np
 import cv2 
 import random
+import os
 
 image_path = './multi_plant/rgb_02_01_009_05.png'
 
