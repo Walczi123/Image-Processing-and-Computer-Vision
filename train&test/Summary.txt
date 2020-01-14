@@ -1,0 +1,8 @@
+Summary
+circinatum average is equal 0.9285714285714286
+garryana average is equal 1.0
+glabrum average is equal 1.0
+kelloggii average is equal 1.0
+macrophyllum average is equal 1.0
+negundo average is equal 1.0
+Average for whole dataset is equal 0.989010989010989
