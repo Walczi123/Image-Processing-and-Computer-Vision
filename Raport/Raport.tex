@@ -1,0 +1,496 @@
+\documentclass[12pt]{article}
+
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage[hidelinks]{hyperref}
+\usepackage[super]{nth}
+\graphicspath{{data/}}
+
+\usepackage{xcolor}
+ 
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+ 
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+ 
+\lstset{style=mystyle}
+
+\textheight 23.2 cm
+
+\textwidth 6.0 in
+
+\hoffset = -0.5 in
+
+\voffset = -2.4 cm
+
+\hyphenation{}
+
+\frenchspacing
+
+\title{
+\large Introduction to image processing and computer vision \\
+\LARGE \textbf{Plant Species Recognition} \\
+Laboratory Project 2
+}
+
+\author{Patryk Walczak}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\thispagestyle{empty}
+
+\newpage
+
+\clearpage
+\pagenumbering{arabic}
+
+\section{Introduction}
+
+\paragraph{
+Main task of the project is elaboration of discriminative feature vector for the leaves of trees. Using computer vision processing find the vectors then learn the machine learning model with 80\% of the data set and test the results on remaning part. Six tree species each in separate dictionary are stored in "isolated" dictionary. In each class is from 38 up to 97 images of leaves.
+}
+
+
+\begin{figure}[b!]
+    \centering
+    \begin{subfigure}[b]{0.3\textwidth}
+        \includegraphics[width=\textwidth]{circinatum_sample.jpg}
+        \caption{Acer Circinatum\\Vine Maplel}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.3\textwidth}
+        \includegraphics[width=\textwidth]{garryana_sample.jpg}
+        \caption{Quercus Garryana\\Oregon White Oak}
+    \end{subfigure}\\
+    \begin{subfigure}[b]{0.3\textwidth}
+        \includegraphics[width=\textwidth]{glabrum_sample.jpg}
+        \caption{Acer Glabrum\\Douglasii}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.3\textwidth}
+        \includegraphics[width=\textwidth]{kelloggii_sample.jpg}
+        \caption{Quercus Kelloggii\\California Black Oak}
+    \end{subfigure}\\
+    \begin{subfigure}[b]{0.3\textwidth}
+        \includegraphics[width=\textwidth]{macrophyllum_sample.jpg}
+        \caption{Acer Macrophyllum\\Big Leaf Maple}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.3\textwidth}
+        \includegraphics[width=\textwidth]{negundo_sample.jpg}
+        \caption{Acer Negundo\\Boxelder}
+    \end{subfigure}
+    \caption{Pictures of leaves}
+\end{figure}
+
+\subsection{Project Description}
+
+\subparagraph{
+For classification I chose random forest method, which is ensemble learning method for classification, regression and other tasks that operates by constructing a multitude of decision trees. All images are analized by 3 descriptors, all of them are used to learn the algorithm and after that to recognise images from test set. For all purpose I prepared 4 python files.\\\\
+}
+
+List of files :
+\begin{itemize}
+\item descriptors.py - contains all descriptiors funtions
+\item summary.py - uses to save all results in files
+\item separateImages.py - copy files to "train\&test" directory and separate them in train and test sets
+\item train\&test.py - main file contains all train and test functions
+\end{itemize}
+
+\section{Classification}
+
+\paragraph{
+In the section is described process of classifiaction leaves, using the descriptors and training and testing model.
+}
+
+\subsection{Feature Descriptors}
+
+\subparagraph{
+The subsection includes descriptions of all descriptors.
+}
+
+\subsubsection{Hu Moments}
+
+Hu moments are used to calculate moments that are invariant to translation, scale, and rotation. The feature descriptor is in first funtion in "descriptors.py". For clarify, an image moment is a certain particular weighted average (moment) of the image pixels' intensities, or a function of such moments, usually chosen to have some attractive property or interpretation.
+
+\begin{lstlisting}[language=Python]
+def separeteImages():
+# Hu Moments
+def fd_hu_moments(image):
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    feature = cv2.HuMoments(cv2.moments(gray)).flatten()
+    return feature
+\end{lstlisting} 
+
+This is a simple function. It takes as a input only image, change the image's colors to black and white and compute Hu Moments. At the end it flattens the results to one array.
+
+\subsubsection{Haralick Texture}
+
+Texture defines the consistency of patterns and colors in a image. Haralick suggested the use of gray level co-occurrence matrices (GLCM).The basic idea of GLCM - it looks for pairs of adjacent pixel values that occur in an image and keeps recording it over the entire image. The Haralick Texture is computed in second funtion in "descriptors.py".
+
+\begin{lstlisting}[language=Python]
+# Haralick Texture
+def fd_haralick(image):
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    haralick = mahotas.features.haralick(gray).mean(axis=0)
+    return haralick
+\end{lstlisting} 
+
+The funciton is simple, takes only image as input, and return haralick descriptor. Firstly it changes the colors of the image to black and white. After that using mahotas library function computes the feature descriptor.
+
+\subsubsection{Color Histogram}
+
+In image processing and photography, a color histogram is a representation of the distribution of colors in an image. For digital images, a color histogram represents the number of pixels that have colors in each of a fixed list of color ranges, that span the image's color space, the set of all possible colors. The ranges convert to the vector is result of the third featre descriptor in "descriptors.py".
+
+\begin{lstlisting}[language=Python]
+# Color Histogram
+def fd_histogram(image):
+    hist  = cv2.calcHist([image], [0, 1, 2], None, [8, 8, 8], [0, 256, 0, 256, 0, 256])
+    cv2.normalize(hist, hist)
+    return hist.flatten()
+\end{lstlisting} 
+
+The function is even easier then the previous two. As the two, the descripor for computation needs only image. Then even no changes of colors are required. Using the OpemCV library and the calcHist method the function compute histogram. After that, the historgram is normalized and returned flattened.
+
+\subsubsection{Histogram of Oriented Gradients}
+
+The Histogram of Oriented Gradients descriptor technique counts occurrences of gradient orientation in localized portions of an image.
+The feature descriptor is computed as fourth one in descriptors.py".
+
+\begin{lstlisting}[language=Python]
+# Histogram of Oriented Gradients
+def fd_histog(image):
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    h = feature.hog(gray, orientations=9, pixels_per_cell=(8, 8),
+            cells_per_block=(2, 2), transform_sqrt=True, block_norm="L1")
+    return h
+\end{lstlisting} 
+
+As the rest descriptor functions, the one takes only image as input also. Then changing of the colors to black and white occures. The feature library helps with computing of the histogram of the oriented gradients. And result of the hog method is returned.
+
+\subsubsection{Unused}
+
+I prepared Oriented Fast and Rotated BRIEF descripor also but the methon SIFT\_create() from cv2.xfeatures2d returned the comunicat "This algorithm is patented and is excluded in this configuration". So that I decided not to use the descriptor in the project. 
+
+\begin{lstlisting}[language=Python]
+def fd_orb(image):
+    gray= cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
+    sift = cv2.xfeatures2d.SIFT_create()
+    kp = sift.detect(gray,None)
+    image=cv2.drawKeypoints(gray,kp,image)
+    cv2.show('sift_keypoints.jpg',image)
+\end{lstlisting} 
+ 
+\subsection{Cross validation}
+
+\subparagraph{
+Cross validation is procces with predict the ML model's accuracy. In the project is used 10-fold cross validation what means that the data set is divided into 10 subsets. The algorithm predict the result 10 times, every time 9 sets are used to train and one for tests. Each iteration other set is the test one, so for each set is once used for test and nine times for train. The average of the ten results is returned.\\\\
+}
+
+\begin{lstlisting}[language=Python]
+    print("10-fold cross validation")
+    class_names = ["circinatum", "garryana", "glabrum", "kelloggii", "macrophyllum","negundo"]
+    all_descriptors = []
+    labels          = []
+    for label in class_names:
+        for jpgfile in glob.glob("isolated/"+label+"/*.jpg"):
+            image = cv2.imread(jpgfile)
+            image = cv2.resize(image, (512,512))
+\end{lstlisting} 
+
+Every image in data set is loaded and resize to the same dimensions. 
+
+\begin{lstlisting}[language=Python]
+            fv_hu_moments = fd_hu_moments(image)
+            fv_haralick   = fd_haralick(image)
+            fv_histogram  = fd_histogram(image)
+            fd_hog        = fd_histog(image)
+            # save them in descriptors variable
+            descriptors = np.hstack([fv_histogram, fv_haralick, fv_hu_moments, fd_hog])
+\end{lstlisting} 
+
+The stack of descriptors is saved in all\_descriptors list and spiece is saved in labels list.
+
+\begin{lstlisting}[language=Python]
+            # save labels and feature as the vectors
+            labels.append(label)
+            all_descriptors.append(descriptors)
+\end{lstlisting} 
+
+Then from library "sklearn.model\_selection" take KFold function and prepare algorithm for 10-fold cross validation.
+After that function create ML model - Random Forest Classifier. At the end the function computes the cross validataion and printf mean and standard deviation of the ten results fo the 10-fold algorithm.
+
+\begin{lstlisting}[language=Python]
+    # # 10-fold cross validation
+    kfold = KFold(n_splits=10)
+    rf = RandomForestClassifier(n_estimators=100, random_state=9)
+    cv_results = cross_val_score(rf, train_data, train_labels, cv=kfold, scoring="accuracy")
+    msg = "%s: %f (%f)" % ('RF', cv_results.mean(), cv_results.std())
+    print(msg)
+\end{lstlisting}  
+
+\subsection{Division of data set}
+
+\subparagraph{
+For classification purposes the data set has to be splited in two parts. The first with 80\% of all images is used to train the method. The second with remaining 20\% is used for test of the method. \\\\
+}
+
+In "separete\_images.py" I prepared function for split the data set. 
+
+\begin{lstlisting}[language=Python]
+class_names = ["circinatum", "garryana", "glabrum", "kelloggii", "macrophyllum","negundo"]
+directory = "train&test"
+
+def separeteImages():
+\end{lstlisting} 
+
+Firstly, the program create new empty direcories to store the images.
+
+\begin{lstlisting}[language=Python]
+ # create new empty directories
+    if os.path.exists(directory):
+        shutil.rmtree(directory, ignore_errors=True)
+    os.makedirs(directory)
+\end{lstlisting} 
+
+Next, for every spiece create test and train direcotries.
+
+\begin{lstlisting}[language=Python]
+  # for every spiece
+    for image in class_names:
+        # prepare two directories 
+        # one for train images
+        train_dir = directory+"/"+image
+        os.mkdir(train_dir)
+        train_dir += "/train"
+        os.mkdir(train_dir)
+        # one for test images
+        test_dir = directory+"/"+image+"/test"
+        os.mkdir(test_dir)
+\end{lstlisting} 
+
+After that, program start spliting all photos in the set
+
+\begin{lstlisting}[language=Python]
+        # for every image in data set
+        i=0
+        for jpgfile in glob.glob("isolated/"+image+"/*.jpg"):
+            if(i%5==0):
+                shutil.copy(jpgfile, test_dir)
+            else:
+                shutil.copy(jpgfile, train_dir)
+            i+=1
+\end{lstlisting} 
+
+Every image with index number equal modulo to 5 is saved in test directory, and the rest are stored in train directory.
+For comparision of the descriptors I preformed the code only once at start of the project. The fact provides that for all results algorith always has the same input data.
+
+
+\subsection{Train and test}
+
+\subparagraph{
+The section covers the most important part of the project. Here is desciption of the main algorithm which learn the ML model and after that tests the results. The algorithm is included in "train\_test.py" \\\\
+}
+
+At the start program reads all imagines in train directories from all spieces and resize all of them to common dimensions.
+
+\begin{lstlisting}[language=Python]
+all_descriptors = []
+labels          = []
+# learning from the train directories
+for label in class_names:
+    for file in glob.glob('train&test/'+(label)+'/train/*.jpg'):
+        # read the image and resize it to the common size
+        image = cv2.imread(file)
+        image = cv2.resize(image, (512,512))        
+\end{lstlisting} 
+
+For each image all descriptors are computed and saved in all\_descriptors list, while the spiece name of the image is stored in labels list.
+
+\begin{lstlisting}[language=Python]
+        # compute descriptors 
+        fv_hu_moments = fd_hu_moments(image)
+        fv_haralick   = fd_haralick(image)
+        fv_histogram  = fd_histogram(image)
+        fd_hog          = fd_histog(image)
+        # save them in descriptors variable
+        descriptors = np.hstack([fv_histogram, fv_haralick, fv_hu_moments, fd_hog])
+        # save labels and feature as the vectors
+        labels.append(label)
+        all_descriptors.append(descriptors)
+\end{lstlisting} 
+
+When the traning set of data completed, program creates the Random Forest Classifier and learns the ML model.
+
+\begin{lstlisting}[language=Python]
+# Random Forests Classifier
+clf  = RandomForestClassifier(n_estimators=100, random_state=9)
+# learning the model
+clf.fit(all_descriptors, labels)
+\end{lstlisting} 
+
+When learning is done, algorithm start testing section by reads all images and resize them.
+
+\begin{lstlisting}[language=Python]
+for label in class_names: 
+    for file in glob.glob('train&test/'+(label)+'/test/*.jpg'):
+        # read the image and resize it to the common size
+        image = cv2.imread(file)
+        image = cv2.resize(image, (512,512)) 
+\end{lstlisting} 
+
+Once again program computes all descriptors but in the case for the testing images.
+
+\begin{lstlisting}[language=Python]
+        # compute descriptors
+        fv_hu_moments = fd_hu_moments(image)
+        fv_haralick   = fd_haralick(image)
+        fv_histogram  = fd_histogram(image)
+        fd_hog          = fd_histog(image)
+        # save them in descriptors variable
+        descriptors = np.hstack([fv_histogram, fv_haralick, fv_hu_moments, fd_hog])
+\end{lstlisting} 
+
+Next step is the prediction and checking the results. Name of the spiece is printed out with the predited spiece. User can easly and in real-time check the results. 
+
+\begin{lstlisting}[language=Python]
+        prediction = clf.predict(descriptors.reshape(1,-1))[0]
+        print(label,prediction)
+        results.append((label,prediction))
+\end{lstlisting} 
+
+All of results are stored in results list. The reason for that is optional function which can save the data to files and computes the mean.
+The function "save\_and\_summary" is described in the next subsection.
+
+\begin{lstlisting}[language=Python]
+save_and_summary(results)
+\end{lstlisting} 
+
+\subsection{Summary}
+
+\subparagraph{
+For saving results for each image, each spiece and for all data set I prepared summary.py file. \\\\
+}
+
+At first, the program create empty files in directory "test\&file". AllResults.txt file includes all results in form "spiece"->"predition", and
+Summary.txt file includes summary for each class and whole data set.
+
+\begin{lstlisting}[language=Python]
+# function for save results and summary
+def save_and_summary( results ):
+    # create files to save results
+    if not os.path.exists("./train&test"):
+        os.makedirs("./train&test")
+    AllResults = open("./train&test/AllResults.txt" , 'w')     
+    Summary = open("./train&test/Summary.txt" , 'w') 
+\end{lstlisting} 
+
+\begin{center}
+\begin{figure}[h!]
+\centering
+\includegraphics[width = 4in]{summary_sample.png}
+\end{figure}
+\end{center}
+
+\begin{center}
+\begin{figure}[h!]
+\centering
+\includegraphics[width =3in]{allresults_sample.png}
+\end{figure}
+\end{center}
+
+Variable "results" is a list of tuples with correct answer at the \nth{1} postion and predition of the model at the \nth{2} position in each tuple.
+
+\begin{lstlisting}[language=Python]
+# from train&test.py
+results.append((label,prediction))
+\end{lstlisting} 
+
+Then create two dictionaries and save the results to AllResults.txt. In the same loop compute number of correct predictions.
+
+\begin{lstlisting}[language=Python]
+# create 2 dictionaries for computing correct preditions
+    num = dict()
+    den = dict()
+    for name in class_names:
+        num[name] = 0
+        den[name] = 0
+    for result in results:
+        # write all preditions to AllResults file
+        AllResults.write(' -> '.join(result)+'\n')
+        # compute correctness for each spiecie
+        den[result[0]] += 1
+        if result[0] == result[1]:
+            num[result[0]] += 1
+\end{lstlisting} 
+
+In next step program starts summary. Firstly, compute result for each spiece.
+
+\begin{lstlisting}[language=Python]
+n = 0
+    d = 0
+    # Summary
+    Summary.write("Summary\n")
+    for name in class_names:
+        # write results for each class
+        if den[name] != 0:
+            line = name+" average is equal "+ str(num[name]/den[name])
+            Summary.write(line+"\n")        
+            print(line)
+        n += num[name]
+        d += den[name]
+\end{lstlisting} 
+
+Then it computes mean for all data set.
+
+\begin{lstlisting}[language=Python]
+ if d != 0:
+        # write result for whole data set
+        line = "Average for whole dataset is equal "+ str(n/d)
+        Summary.write(line+"\n")        
+        print(line)
+\end{lstlisting} 
+
+At the end close the files.
+
+\section{Results}
+
+\section{References}
+
+\begin{enumerate}
+\item \url{https://en.wikipedia.org/wiki/Random\_forest}
+\item \url{https://gogul.dev/software/image-classification-python}
+\item \url{https://www.learnopencv.com/histogram-of-oriented-gradients/}
+\item \url{https://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_feature2d/py_orb/py_orb.html}
+\item \url{https://en.wikipedia.org/wiki/Image_moment}
+\item \url{http://wiki.awf.forst.uni-goettingen.de/wiki/index.php/Haralick_Texture}
+\item \url{https://software.intel.com/en-us/ipp-dev-reference-histogram-of-oriented-gradients-hog-descriptor}
+\item \url{https://en.wikipedia.org/wiki/Color_histogram}
+\item \url{https://software.intel.com/en-us/ipp-dev-reference-histogram-of-oriented-gradients-hog-descriptor}
+\item \url{https://software.intel.com/en-us/ipp-dev-reference-histogram-of-oriented-gradients-hog-descriptor}
+
+\end{enumerate}
+
+\end{document}

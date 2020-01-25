@@ -1,0 +1,15 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [2][-]{subsection.1.1}{Project Description}{section.1}% 2
+\BOOKMARK [1][-]{section.2}{Classification}{}% 3
+\BOOKMARK [2][-]{subsection.2.1}{Feature Descriptors}{section.2}% 4
+\BOOKMARK [3][-]{subsubsection.2.1.1}{Hu Moments}{subsection.2.1}% 5
+\BOOKMARK [3][-]{subsubsection.2.1.2}{Haralick Texture}{subsection.2.1}% 6
+\BOOKMARK [3][-]{subsubsection.2.1.3}{Color Histogram}{subsection.2.1}% 7
+\BOOKMARK [3][-]{subsubsection.2.1.4}{Histogram of Oriented Gradients}{subsection.2.1}% 8
+\BOOKMARK [3][-]{subsubsection.2.1.5}{Unused}{subsection.2.1}% 9
+\BOOKMARK [2][-]{subsection.2.2}{Cross validation}{section.2}% 10
+\BOOKMARK [2][-]{subsection.2.3}{Division of data set}{section.2}% 11
+\BOOKMARK [2][-]{subsection.2.4}{Train and test}{section.2}% 12
+\BOOKMARK [2][-]{subsection.2.5}{Summary}{section.2}% 13
+\BOOKMARK [1][-]{section.3}{Results}{}% 14
+\BOOKMARK [1][-]{section.4}{References}{}% 15
