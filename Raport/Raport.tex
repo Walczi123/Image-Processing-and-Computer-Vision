@@ -115,7 +115,7 @@ List of files :
 \begin{itemize}
 \item descriptors.py - contains all descriptors functions
 \item summary.py - uses to save all results in files
-\item separate\_images.py - copy files to "train\&test" directory and separate them to train and test sets
+\item separate\_images.py - copies files to "train\&test" directory and separates them to train and test sets
 \item train\_test.py - the main file contains all train and test functions
 \item cross\_validation.py - file contains function with cross-validation
 \end{itemize}
@@ -125,7 +125,7 @@ List of files :
 \section{Classification}
 
 \paragraph{
-In the section is described the process of classification leaves, using the descriptors and training and testing model.
+In the section the processes of classification leaves, using the descriptors, training and testing model are described.
 }
 
 \subsection{Feature Descriptors}
@@ -136,7 +136,7 @@ The subsection includes descriptions of all descriptors.
 
 \subsubsection{Hu Moments}
 
-Hu moments are used to calculate moments that are invariant to translation, scale, and rotation. The feature descriptor is in the first function in "descriptors.py". For clarify, an image moment is a certain particular weighted average (moment) of the image pixels' intensities or a function of such moments, usually chosen to have some attractive property or interpretation.
+Hu moments are used to calculate moments that are invariant to translation, scale, and rotation. To clarify, an image moment is a certain particular weighted average (moment) of the image pixels' intensities or a function of such moments, usually chosen to have some attractive property or interpretation. The feature descriptor is in the first function in "descriptors.py".
 
 \begin{lstlisting}[language=Python]
 # Hu Moments
@@ -146,11 +146,11 @@ feature = cv2.HuMoments(cv2.moments(gray)).flatten()
 return feature
 \end{lstlisting}
 
-This is a simple function. It takes as an input the only image, changes the image's colors to black and white and computes Hu Moments. In the end, it flattens the results to one array.
+This is a simple function. It takes as an input only one image, changes the image's colors to black and white and computes Hu Moments. In the end, it flattens the results to one array.
 
 \subsubsection{Haralick Texture}
 
-Texture defines the consistency of patterns and colors in an image. Haralick suggested the use of grey level co-occurrence matrices (GLCM). The basic idea of GLCM - it looks for pairs of adjacent pixel values that occur in an image and keeps recording it over the entire image. The Haralick Texture is computed in the second function in "descriptors.py".
+Texture defines the consistency of patterns and colors in an image. Haralick suggested the use of grey level co-occurrence matrices (GLCM). The basic idea of GLCM - it searches for pairs of adjacent pixel values that occur in an image and keeps recording it over the entire image. The Haralick Texture is computed in the second function in "descriptors.py".
 
 \begin{lstlisting}[language=Python]
 # Haralick Texture
@@ -160,11 +160,11 @@ haralick = mahotas.features.haralick(gray).mean(axis=0)
 return haralick
 \end{lstlisting}
 
-The function is simple, takes the only image as input, and return haralick descriptor. Firstly it changes the colors of the image to black and white. After that using mahotas library function computes the feature descriptor.
+The function takes only one image as input, and returns haralick descriptor. Firstly it changes the colors of the image to black and white. After that using "mahotas" library function computes the feature descriptor.
 
 \subsubsection{Color Histogram}
 
-In image processing and photography, a color histogram is a representation of the distribution of colors in an image. For digital images, a color histogram represents the number of pixels that have colors in each of a fixed list of color ranges, that span the image's color space, the set of all possible colors. The ranges convert to the vector is the result of the third feature descriptor in "descriptors.py".
+In image processing and photography, a color histogram is a representation of the distribution of colors in an image. For digital images, a color histogram represents the number of pixels that have colors in each of a fixed list of color ranges, that span the image's color space, the set of all possible colors. The ranges converted to the vector is the result of the third feature descriptor in "descriptors.py".
 
 \begin{lstlisting}[language=Python]
 # Color Histogram
@@ -174,7 +174,7 @@ cv2.normalize(hist, hist)
 return hist.flatten()
 \end{lstlisting}
 
-The function is even easier than the previous two. The descriptor for computation needs the only image. Then even no changes of colours are required. Using the OpenCV library and the calcHist method the function compute the histogram. After that, the histogram is normalized and returned flattened.
+The function is even easier than the previous two. The descriptor for computation needs only one image. Then even no changes of colours are required. Using the OpenCV library and the calcHist method the function computes the histogram. After that, the histogram is normalized and returned flattened.
 
 \subsubsection{Histogram of Oriented Gradients}
 
@@ -190,12 +190,12 @@ cells_per_block=(2, 2), transform_sqrt=True, block_norm="L1")
 return h
 \end{lstlisting}
 
-As the rest descriptor functions, the one takes the only image as input also. Then changing the colors to black and white occurs. The feature library helps with the computing of the histogram of the oriented gradients. And the result of the hog method is returned.
+As the rest of descriptor functions, the one takes only one image as input also. Then changing the colors to black and white occurs. The "feature" library helps with the computing of the histogram of the oriented gradients. And the result of the hog method is returned.
 
 \subsubsection{Local Binary Pattern}
 
-In the whole project is only two local descriptors - the first one Local Binary Pattern, which computes a local representation of texture.
-The input image is changed to the black-and-white photo, then using feature library and its method local\_binary\_pattern compute the descriptor.
+In the whole project, there is only two local descriptors - the first one is Local Binary Pattern, which computes a local representation of texture.
+The input image is changed to the black-and-white photo, then using "feature" library and its method local\_binary\_pattern computes the descriptor.
 
 \begin{lstlisting}[language=Python]
 def fd_binary_pattern(image):
@@ -211,7 +211,7 @@ return hist
 
 \subsubsection{Oriented FAST and rotated BRIEF}
 
-The second local descriptor is Oriented FAST and rotated BRIEF. For the one, the results were different for each kind of tree. To prevent the different length of the descriptor vector, after computing the descriptor the length is changed to 100. If the vector has less then 100 values the remaining is a sequence of zeros, in another case when vector has more than 100 values only the first hundred is taken as the result.
+The second local descriptor is Oriented FAST and rotated BRIEF. For that one, the results were different for each kind of tree. To prevent the different lengths of the descriptor vectors, after computing the descriptor the lengths are changed to 100. If the vector has less then 100 values the remaining is a sequence of zeros, in another case when vector has more than 100 values only the first hundred is taken as the result.
 
 \begin{lstlisting}[language=Python]
 # Oriented FAST and rotated BRIEF
@@ -240,7 +240,7 @@ keypoints,descriptors= freakExtractor.compute(gray,None)
 return keypoints
 \end{lstlisting}
 
-After searching for information, I found the free version of SIFT algorithm but it does not return any features. The algorithm throws an error because the machine learning model cannot learn from an empty feature vector. So as in the upper case, I decided to not use the descriptor in the project.
+After searching for information, I found the free version of SIFT algorithm but it does not return any features. The algorithm throws an error because the machine learning model cannot learn from an empty feature vector. So as in the previous case, I decided to not use the descriptor in the project.
 
 \begin{lstlisting}[language=Python]
 # SIFT v2
@@ -259,7 +259,7 @@ return kp
 
 \subparagraph{Cross-validation is a process which predicts the ML model's accuracy.}
 
-In the project is used 10-fold cross-validation which means that the data set is divided into 10 subsets. The algorithm predicts the result 10 times, every time 9 sets are used to train and one for tests. Each iteration other set is the test one, so for each set is once used for test and nine times for train. The average of the ten results is returned.
+In the project is used 10-fold cross-validation which means that the data set is divided into 10 subsets. The algorithm predicts the result 10 times, every time 9 sets are used to train and one for tests. Each iteration other set is the test one, so each set is once used for testing and nine times for training. The average of the ten results is returned.
 
 \begin{lstlisting}[language=Python]
 print("10-fold cross validation")
@@ -272,7 +272,7 @@ image = cv2.imread(jpgfile)
 image = cv2.resize(image, (512,512))
 \end{lstlisting}
 
-Every image in the data set is loaded and resize to the same dimensions.
+Every image in the data set is loaded and resized to the same measurements.
 
 \begin{lstlisting}[language=Python]
 fv_hu_moments = fd_hu_moments(image)
@@ -286,7 +286,7 @@ fv_SIFT       = fd_SIFT(image)
  descriptors = np.hstack([fv_histogram , fv_haralick, fv_hu_moments , fv_hog , fv_binpat, fv_orb])
 \end{lstlisting}
 
-The stack of descriptors is saved in all\_descriptors list and kind of tree is saved in labels list.
+The stack of descriptors are saved in all\_descriptors list and spieces are saved in labels list.
 
 \begin{lstlisting}[language=Python]
 # save labels and feature as the vectors
@@ -294,8 +294,8 @@ labels.append(label)
 all_descriptors.append(descriptors)
 \end{lstlisting}
 
-Then from the library "sklearn.model\_selection" take KFold function and prepare the algorithm for 10-fold cross-validation.
-After that function creates the ML model - Random Forest Classifier. In the end, the function computes the cross-validation and print mean and standard deviation of the ten results fo the 10-fold algorithm.
+Then from the library "sklearn.model\_selection" KFold function is taken and the algorithms prepares the 10-fold cross-validation.
+After that function creates the ML model - Random Forest Classifier. In the end, the program computes the cross-validation and prints mean and standard deviation of the ten results of the 10-fold algorithm.
 
 \begin{lstlisting}[language=Python]
 # # 10-fold cross validation
@@ -314,7 +314,7 @@ print(msg)
 For classification purposes, the data set has to be split into two parts. The first with 80\% of all images are used to train the method. The second with remaining 20\% is used for test of the method. \\\\
 }
 
-In "separete\_images.py" I prepared to function for split the data set.
+In "separate\_images.py" I prepared the function for spliting the data set.
 
 \begin{lstlisting}[language=Python]
 class_names = ["circinatum", "garryana", "glabrum", "kelloggii", "macrophyllum","negundo"]
@@ -332,7 +332,7 @@ shutil.rmtree(directory, ignore_errors=True)
 os.makedirs(directory)
 \end{lstlisting}
 
-Next, for every kind of tree create test and train directories.
+Next, for every kind of tree creates test and train directories.
 
 \begin{lstlisting}[language=Python]
 # for every spiece
@@ -348,7 +348,7 @@ test_dir = directory+"/"+image+"/test"
 os.mkdir(test_dir)
 \end{lstlisting}
 
-After that, the program start splitting all photos in the set
+After that, the program starts splitting all photos in the set
 
 \begin{lstlisting}[language=Python]
 # for every image in data set
@@ -361,8 +361,8 @@ shutil.copy(jpgfile, train_dir)
 i+=1
 \end{lstlisting}
 
-Every image with index number equal modulo to 5 is saved in the test directory, and the rest are stored in train directory.
-For comparison of the descriptors, I preformed the code only once at the start of the project. The fact provides that for all results algorithm always has the same input data.
+Every image with index number equal to 0 modulo 5  is saved in the test directory, and the rest are stored in train directory.
+For comparison of the descriptors, I preformed the code only once at the start of the project. This provides that for all results algorithm always has the same input data.
 
 \newpage
 
@@ -372,7 +372,7 @@ For comparison of the descriptors, I preformed the code only once at the start o
 The section covers the most important part of the project. Here is the description of the main algorithm which learn the ML model and after that tests the results. The algorithm is included in "train\_test.py" \\\\
 }
 
-At the start, the program reads all imagines in train directories from all species and resize all of them to common dimensions.
+At the beginning, the program reads all images in train directories from all species and resizes all of them to common measurements.
 
 \begin{lstlisting}[language=Python]
 all_descriptors = []
@@ -385,7 +385,7 @@ image = cv2.imread(file)
 image = cv2.resize(image, (512,512))
 \end{lstlisting}
 
-For each image, all descriptors are computed and saved in all\_descriptors list, while the species names of the images are stored in labels list.
+For each image, all descriptors are computed and saved in all\_descriptors list, while the species names are stored in labels list.
 
 \begin{lstlisting}[language=Python]
 # compute descriptors
@@ -403,7 +403,7 @@ labels.append(label)
 all_descriptors.append(descriptors)
 \end{lstlisting}
 
-When the training set of data completed, the program creates the Random Forest Classifier and learns the ML model.
+When the training set of data is completed, the program creates the Random Forest Classifier and learns the ML model.
 
 \begin{lstlisting}[language=Python]
 # Random Forests Classifier
@@ -412,7 +412,7 @@ clf = RandomForestClassifier(n_estimators=100, random_state=9)
 clf.fit(all_descriptors, labels)
 \end{lstlisting}
 
-When learning is done, the algorithm starts testing section by reads all images and resize them.
+When learning is done, the algorithm starts testing section by reading all images and resizing them.
 
 \begin{lstlisting}[language=Python]
 for label in class_names:
@@ -422,7 +422,7 @@ image = cv2.imread(file)
 image = cv2.resize(image, (512,512))
 \end{lstlisting}
 
-Once again program computes all descriptors but in the case for the testing images.
+Once again program computes all descriptors but in this case for the testing images.
 
 \begin{lstlisting}[language=Python]
         # compute descriptors
@@ -445,7 +445,7 @@ print(label,prediction)
 results.append((label,prediction))
 \end{lstlisting}
 
-All of the results are stored in the results list. The reason for that is an optional function which can save the data to files and computes the mean.
+All of the results are stored in the results list. The reason for that is an optional function which can save the data to files and compute the mean.
 The function "save\_and\_summary" is described in the next subsection.
 
 \begin{lstlisting}[language=Python]
@@ -460,7 +460,7 @@ save_and_summary(results)
 For saving results for each image, each kind of tree and for all data set I prepared summary.py file. \\\\
 }
 
-At first, the program creates empty files in directory "test\&file". AllResults.txt file includes all results in form "kind of tree"
+At first, the program creates two empty files in directory "test\&file". AllResults.txt file includes all results in form "kind of tree"
 $\rightarrow$
 "prediction", and Summary.txt file includes a summary for each class and whole data set.
 
@@ -495,7 +495,7 @@ Variable "results" is a list of tuples with the correct answer at the \nth{1} po
 results.append((label,prediction))
 \end{lstlisting}
 
-Then create two dictionaries and save the results to AllResults.txt. In the same loop compute the number of correct predictions.
+Then the algorithm creates two dictionaries and saves the results to AllResults.txt. In the same loop it computes the number of correct predictions.
 
 \begin{lstlisting}[language=Python]
 # create 2 dictionaries for computing correct preditions
@@ -513,7 +513,7 @@ if result[0] == result[1]:
 num[result[0]] += 1
 \end{lstlisting}
 
-In the next step, the program starts summary. Firstly, compute the result for each kind of tree.
+In the next step, the program starts summarising. Firstly, it computes the result for each kind of tree.
 
 \begin{lstlisting}[language=Python]
 n = 0
@@ -540,7 +540,7 @@ Summary.write(line+"\n")
 print(line)
 \end{lstlisting}
 
-At the end close the files.
+At the end program closes the files.
 
 \newpage
 
@@ -552,14 +552,14 @@ At the end close the files.
 For better results I prepared 10-fold cross validataion for whole set of data.\\\\
 }
 
-The 10-fold algorithm divides the set into 10 parts and checks the results of machine learning for each set as the test one and rest as the training. Then mean of all 10 outputs it the finite result. The image below shows the results for all descriptors.
+The 10-fold algorithm divides the set into 10 parts and checks the results of machine learning for each set as the tested one and rest as the training group. Then mean of all 10 outputs it the final result. The image below shows the results for all descriptors.
 
 \begin{figure}[h!]
 \centering
 \includegraphics[width=3in]{Cross_1.png}
 \end{figure}
 
-The mean is only 40\%. However, for the 3 descriptors (Hu moments, Haralick Texture, Color Histogram) the cross-validation result has the maximum mean which is equal to 89\%.
+The mean is only 40\%. However, for the 3 descriptors (Hu moments, Haralick Texture, Color Histogram) the cross-validation result has the highest mean which is equal to 89\%.
 
 
 \begin{figure}[h!]
@@ -579,7 +579,7 @@ So after adding 3 global and 2 local descriptors the result increases by only 0,
 \subsection{80\% training / 20\% testing}
 
 \subparagraph{
-In the project description stayed the statement that the whole data set should be divided into two parts. First with 80\% of the images as the training and rest 20\% as the test set. Using "separeteImages()" function which is described in the 2.3 section I divide the data and perform the test.\\\\
+In the project description is the statement that the whole data set should be divided into two parts. First with 80\% of the images as the training and rest 20\% as the test set. Using "separeteImages()" function which is described in the 2.3 section I divide the data and perform the test.\\\\
 }
 
 For the results, I prepared "save\_and\_summary( results )" function which is described in the 2.5 section. All the results are saved as text files. Moreover, each species has the mean results and each prediction is saved also. In the report, I show only the summary of the few sets of descriptors. Firstly the result for all descriptors.
@@ -589,20 +589,20 @@ For the results, I prepared "save\_and\_summary( results )" function which is de
 \includegraphics[width=3in]{results_1.png}
 \end{figure}
 
-The result is low - only 9\%. For the negundo kind, the result is equal to 100\% but this is the only class without 0\% as a result. However below is shown the image with the result using only 3 descriptors (Hu moments, Haralick Texture, Color Histogram).
+The result is low - only 9\%. For the negundo kind, the result is equal to 100\% but this is the only class without 0\% as a result. However below is shown the result of using only 3 descriptors (Hu moments, Haralick Texture, Color Histogram).
 
 \begin{figure}[h!]
 \centering
 \includegraphics[width=3in]{results_3.png}
 \end{figure}
-For the 3 descriptors, the results are much better - around 99\%. And only for the circinatum kind of tree the results are not 100\% correct. And one more result of the comparison is presented below.
+For the 3 descriptors, the results are much better - around 99\%. And only for the circinatum kind of tree the results are not 100\% correct. The result belew looks like 2nd time the same image but this one is different - only Color Histogram was used to obtain the result.
 
 \begin{figure}[h!]
 \centering
 \includegraphics[width=3in]{results_histo.png}
 \end{figure}
 
-The results look like 2nd time the same image but this one is different - only Color Histogram was used to obtain the results. So in the case, the 5 descriptors (3 globals and 2 locals) do not affect the best result. The machine learning model correctly interprets the same number of images using only Color Histogram, the same number using the 3 descriptors and obtain better result then all set of descriptors. The 10-fold cross-validation shows the small difference but for the 80\% training / 20\% testing the results are the same.
+So in the case, the 5 descriptors (3 globals and 2 locals) do not affect the best result. The machine learning model correctly interprets the same number of images using only Color Histogram, the same number using the 3 descriptors and obtains better result then all set of descriptors. The 10-fold cross-validation shows the small difference but for the 80\% training / 20\% testing the results are the same for comparision of 1 and 3 descriports.
 
 \section{Source Code}
 
