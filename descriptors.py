@@ -28,40 +28,46 @@ def fd_histog(image):
             cells_per_block=(2, 2), transform_sqrt=True, block_norm="L1")
     return h
 
-def fd_orb(image):
-    gray= cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
-    sift = cv2.xfeatures2d.SIFT_create()
-    kp = sift.detect(gray,None)
-    image=cv2.drawKeypoints(gray,kp,image)
-    cv2.show('sift_keypoints.jpg',image)
+# Local Binary Pattern
+def fd_binary_pattern(image):
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    lbp = feature.local_binary_pattern(gray, 24, 8, method="uniform")
+    (hist, _) = np.histogram(lbp.ravel(),
+        bins=np.arange(0, 27),
+        range=(0, 26))
+    hist = hist.astype("float")
+    hist /= (hist.sum() + 1e-7)
+    return hist
 
+# Oriented FAST and rotated BRIEF
+def fd_orb(image):
+    orb = cv2.ORB_create(nfeatures=100)
+    keypoints = orb.detect(image,None)
+    keypoints, descriptors = orb.compute(image, keypoints)
+    descriptors=descriptors.flatten()
+    if len(descriptors)<100:
+        descriptors = np.zeros(100-len(descriptors),dtype=int)
+    else:
+        descriptors = np.array(descriptors[0:100])
+    return descriptors
+
+# SIFT
 def fd_SIFT(image):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     freakExtractor = cv2.xfeatures2d.FREAK_create()
     keypoints,descriptors= freakExtractor.compute(gray,None)
     return keypoints 
 
-def fd_BinaryPattern(image):
-    # compute the Local Binary Pattern representation
-    # of the image, and then use the LBP representation
-    # to build the histogram of patterns
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-
-    lbp = feature.local_binary_pattern(gray, 24, 8, method="uniform")
-    (hist, _) = np.histogram(lbp.ravel(),
-        bins=np.arange(0, 27),
-        range=(0, 26))
-
-    # normalize the histogram
-    hist = hist.astype("float")
-    hist /= (hist.sum() + 1e-7)
-
-    # return the histogram of Local Binary Patterns
-    return hist
+# SIFT v2
+def fd_SIFT_v2(image):
+    gray= cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
+    sift = cv2.xfeatures2d.SIFT_create()
+    kp = sift.detect(gray,None)
+    image=cv2.drawKeypoints(gray,kp,image)
+    cv2.show('sift_keypoints.jpg',image)
+    return kp
 
 # for tests
 if __name__ == "__main__":
-    image = cv2.imread(".\isolated\negundo\l20.jpg")
-    cv2.imshow("test", cv2.imread("C:\Patryk\GitHub Repository\Image-Processing-and-Computer-Vision-Project-II\isolated123\negundo\l20.jpg"))
-    cv2.waitKey(0)
-    # print(fd_SIFT(image))  
+    image = cv2.imread('.\isolated/negundo\l20.jpg')
+    print(fd_histog(image))  

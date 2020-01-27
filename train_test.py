@@ -7,8 +7,9 @@ from descriptors import fd_hu_moments
 from descriptors import fd_haralick
 from descriptors import fd_histogram
 from descriptors import fd_histog
-from descriptors import fd_BinaryPattern
+from descriptors import fd_binary_pattern
 from descriptors import fd_SIFT
+from descriptors import fd_orb
 from summary import save_and_summary
 
 class_names = ["circinatum", "garryana", "glabrum", "kelloggii", "macrophyllum","negundo"]
@@ -22,15 +23,15 @@ for label in class_names:
         image = cv2.imread(file)
         image = cv2.resize(image, (512,512))        
         # compute descriptors
-        # fv_hu_moments = fd_hu_moments(image)
-        # fv_haralick   = fd_haralick(image)
-        # fv_histogram  = fd_histogram(image)
-        # fd_hog        = fd_histog(image)
-        # fd_binpat     = fd_BinaryPattern(image)
-        print(file)
-        fv_SIFT       = fd_SIFT(image)  
+        fv_hu_moments = fd_hu_moments(image)
+        fv_haralick   = fd_haralick(image)
+        fv_histogram  = fd_histogram(image)
+        fv_hog        = fd_histog(image)
+        fv_binpat     = fd_binary_pattern(image)
+        fv_orb        = fd_orb(image)
+        # fv_SIFT       = fd_SIFT(image)  
         # save them in descriptors variable
-        descriptors = np.hstack([fv_SIFT])#fv_histogram, fv_haralick, fv_hu_moments, fd_hog])
+        descriptors = np.hstack([fv_histogram, fv_haralick, fv_hu_moments, fv_hog, fv_binpat, fv_orb])
         # save labels and feature as the vectors
         labels.append(label)
         all_descriptors.append(descriptors)
@@ -49,14 +50,15 @@ for label in class_names:
         image = cv2.imread(file)
         image = cv2.resize(image, (512,512))        
         # compute descriptors
-        # fv_hu_moments = fd_hu_moments(image)
-        # fv_haralick   = fd_haralick(image)
-        # fv_histogram  = fd_histogram(image)
-        # fd_hog          = fd_histog(image)
-        # fd_binpat     = fd_BinaryPattern(image)
-        fv_SIFT       = fd_SIFT(image)
+        fv_hu_moments = fd_hu_moments(image)
+        fv_haralick   = fd_haralick(image)
+        fv_histogram  = fd_histogram(image)
+        fd_hog        = fd_histog(image)
+        fd_binpat     = fd_binary_pattern(image)
+        fv_orb        = fd_orb(image)
+        # fv_SIFT       = fd_SIFT(image)
         # save them in descriptors variable
-        descriptors = np.hstack([fv_SIFT])#fv_histogram, fv_haralick, fv_hu_moments, fd_hog])
+        descriptors = np.hstack([fv_histogram, fv_haralick, fv_hu_moments, fv_hog, fv_binpat, fv_orb])
         prediction = clf.predict(descriptors.reshape(1,-1))[0]
         print(label,prediction)
         results.append((label,prediction))

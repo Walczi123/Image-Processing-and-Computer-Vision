@@ -2,6 +2,9 @@ from descriptors import fd_hu_moments
 from descriptors import fd_haralick
 from descriptors import fd_histogram
 from descriptors import fd_histog
+from descriptors import fd_binary_pattern
+from descriptors import fd_SIFT
+from descriptors import fd_orb
 import glob
 import cv2
 import numpy as np
@@ -23,9 +26,12 @@ def cross_validation():
             fv_hu_moments = fd_hu_moments(image)
             fv_haralick   = fd_haralick(image)
             fv_histogram  = fd_histogram(image)
-            fd_hog        = fd_histog(image)
+            fv_hog        = fd_histog(image)
+            fv_binpat     = fd_binary_pattern(image)
+            fv_orb        = fd_orb(image)
+            fv_SIFT       = fd_SIFT(image)
             # save them in descriptors variable
-            descriptors = np.hstack([fv_histogram, fv_haralick, fv_hu_moments, fd_hog])
+            descriptors = np.hstack([fv_histogram , fv_haralick, fv_hu_moments , fv_hog , fv_binpat, fv_orb])
             # save labels and feature as the vectors
             labels.append(label)
             all_descriptors.append(descriptors)
